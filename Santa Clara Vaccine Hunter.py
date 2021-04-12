@@ -1,24 +1,54 @@
+# This program works by monitoring a sentence or word (ie. no appointment or unavailable) on a website. If the sentence or word remains the same after a certain time, it will continue to monitor. If the sentence or word changes, it will launch the website
+# To use these codes, install beautifulsoup by typing "pip install bs4" in your terminal. 
+# Then, install requests by typing "pip install requests" in your terminal
+# Then, install lxml by typing "pip install lxml" in your terminal
+# To enable the launching feature, install selenium by typing "pip install selenium" in your terminal
+# Go to https://chromedriver.chromium.org/downloads, download the chromedriver that matches your current chrome version. Open the file location and copy that location for your first variable
+
+
 from bs4 import BeautifulSoup
 from selenium import webdriver
 import requests
 import time
 from datetime import datetime
 
-for number in range(50):
-    source = requests.get('https://vax.sccgov.org/mvcc').text
+#Paste your chromedriver location down here
+Chromedriverlocation = 'Paste here'
+
+#Which website do you want to monitor
+website = 
+
+#How often do you want to check the website for change? Type it in seconds (ie. 5 minutes = 300)
+checkingtime = 
+
+#For how long do you want this program to be monitoring the website? Type it in hours (ie. 1 hour = 1)
+monitoringtime = 
+
+workingtime = 3600*monitoringtime/checkingtime
+
+#calculate working time and insert it below if error occurs
+for number in range(workingtime):
+    #This part is tricky, paste these 4 lines of code into a separate python file to find your changing word
+    source = requests.get(website).text
     soup = BeautifulSoup(source, 'lxml')
-    div = soup.find('div')
-    headline1 = div.h3.span.text
+    #Find out what are the tags that surround the word you want to monitor (ie. if the tag for your word is div, type div below)
+    tagname = 
+    word = soup.find(tagname)
+    #Find out what are the more specific tags surrounding the word you want to monitor (ie. if you see h3 and span, type word.h3.span.text)
+    headline = word.text
+    #Use print(headline) to check if you got the right word. If not, keep trying to get the word by changing tag names that surrounds the word until you get the right word printed
+    #Once you got the right word, copy paste all 4 lines back here
 
-    time.sleep(600)
-
-    source = requests.get('https://vax.sccgov.org/mvcc').text
+    time.sleep(checkingtime)
+    
+    #Copy paste the 4 lines of code here too, but change headline to newheadline, you should be able to run it by now.
+    source = requests.get(website).text
     soup = BeautifulSoup(source, 'lxml')
-    div = soup.find('div')
-    newheadline1 = div.h3.span.text
+    word = soup.find(tagname)
+    newheadline = word.text
 
 
-    if headline1 == newheadline1:
+    if headline == newheadline:
         now = datetime.now()
         current_time = now.strftime("%H:%M")
         print("No Change  ", current_time)
@@ -28,8 +58,8 @@ for number in range(50):
         now = datetime.now()
         current_time = now.strftime("%H:%M")
         print('Something Changed!  ', current_time)
-        browser = webdriver.Chrome('/Users/joannelee/Downloads/chromedriver')
-        browser.get('https://vax.sccgov.org/mvcc')
+        browser = webdriver.Chrome(Chromedriverlocation)
+        browser.get(website)
         break
 
 
